@@ -18,6 +18,9 @@ services:
       - key: JWT_REFRESH_SECRET
         sync: false
       - key: CORS_ORIGIN
+        # Add your Vercel URLs here once deployed
+        # Format: https://your-site.vercel.app,https://your-admin.vercel.app
+        # Will be updated when custom domains are configured
         value: https://nullscape.in,https://www.nullscape.in,https://admin.nullscape.in
       - key: SITE_URL
         value: https://nullscape.in
