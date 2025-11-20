@@ -11,7 +11,7 @@ const router = Router();
 router.get('/robots.txt', cacheMiddleware(60 * 60 * 1000), async (req, res, next) => {
   try {
     const settings = await SEOSettings.findOne({}).sort('-updatedAt').lean();
-    const robots = settings?.robotsTxt || `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || 'http://localhost:3000'}/sitemap.xml`;
+    const robots = settings?.robotsTxt || `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || 'https://nullscape.in'}/sitemap.xml`;
     res.setHeader('Content-Type', 'text/plain');
     res.send(robots);
   } catch (e) {
@@ -21,7 +21,7 @@ router.get('/robots.txt', cacheMiddleware(60 * 60 * 1000), async (req, res, next
 
 router.get('/sitemap.xml', cacheMiddleware(30 * 60 * 1000), async (req, res, next) => {
   try {
-    const base = process.env.SITE_URL || 'http://localhost:8000';
+    const base = process.env.SITE_URL || 'https://nullscape.in';
     const [services, blogs, projects] = await Promise.all([
       Service.find({ status: 'active' }).select('slug updatedAt').lean().limit(1000),
       BlogPost.find({ status: 'published' }).select('slug updatedAt').sort('-publishedAt').lean().limit(1000),
