@@ -10,6 +10,9 @@
     "prepare": "husky install || true",
     "create-indexes": "node scripts/create-indexes.js",
     "check-indexes": "node scripts/create-indexes.js",
+    "seed-services": "node scripts/seedCustomServices.js",
+    "create-admin": "node scripts/createAdminUser.js",
+    "update-service-categories": "node scripts/updateServiceCategories.js",
     "postinstall": "npm run create-indexes || true"
   },
   "dependencies": {

@@ -13,6 +13,8 @@ import { PortfolioCategory } from '../models/PortfolioCategory.js';
 import { TechStack } from '../models/TechStack.js';
 import { PricingPlan } from '../models/PricingPlan.js';
 import { BlogCategory } from '../models/BlogCategory.js';
+import { Partner } from '../models/Partner.js';
+import { ServiceCategory } from '../models/ServiceCategory.js';
 
 export const PortfolioController = createCrudControllers(PortfolioProject);
 export const BlogController = createCrudControllers(BlogPost);
@@ -28,6 +30,8 @@ export const PortfolioCategoryController = createCrudControllers(PortfolioCatego
 export const TechStackController = createCrudControllers(TechStack);
 export const PricingPlanController = createCrudControllers(PricingPlan);
 export const BlogCategoryController = createCrudControllers(BlogCategory);
+export const PartnerController = createCrudControllers(Partner);
+export const ServiceCategoryController = createCrudControllers(ServiceCategory);
 
 
 

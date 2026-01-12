@@ -17,6 +17,8 @@ import analyticsRoutes from './analytics.routes.js';
 import seoPublicRoutes from './seoPublic.routes.js';
 import activityRoutes from './activity.routes.js';
 import jobsRoutes from './jobs.routes.js';
+import partnersRoutes from './partners.routes.js';
+import serviceCategoryRoutes from './serviceCategories.routes.js';
 
 const router = Router();
 
@@ -43,5 +45,7 @@ router.use('/analytics', analyticsRoutes);
 router.use('/seo', seoPublicRoutes);
 router.use('/activity', activityRoutes);
 router.use('/jobs', jobsRoutes);
+router.use('/partners', partnersRoutes);
+router.use('/service-categories', serviceCategoryRoutes);
 
 export default router;
