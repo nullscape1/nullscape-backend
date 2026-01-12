@@ -10,6 +10,7 @@ const portfolioSchema = new mongoose.Schema(
     timeline: { type: String },
     problem: { type: String },
     solution: { type: String },
+    description: { type: String }, // HTML content for description
     techStack: [{ type: String, index: true }],
     screenshots: [{ type: String }],
     seoTitle: { type: String },

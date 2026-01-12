@@ -37,6 +37,26 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Health check and root routes (before rate limiting)
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Nullscape API Server',
+    version: '1.0.0',
+    status: 'online',
+    documentation: '/api/v1/health',
+    endpoints: {
+      health: '/api/v1/health',
+      services: '/api/v1/services',
+      blog: '/api/v1/blog',
+      portfolio: '/api/v1/portfolio',
+    },
+  });
+});
+
+app.get('/api/v1/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Rate limiting
 app.use(rateLimiter);
 
@@ -78,22 +98,6 @@ if (process.env.NODE_ENV === 'production') {
 
 // Static uploads
 app.use('/uploads', express.static('src/uploads'));
-
-// Root route - redirect to API health check
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Nullscape API Server',
-    version: '1.0.0',
-    status: 'online',
-    documentation: '/api/v1/health',
-    endpoints: {
-      health: '/api/v1/health',
-      services: '/api/v1/services',
-      blog: '/api/v1/blog',
-      portfolio: '/api/v1/portfolio',
-    },
-  });
-});
 
 // API routes
 app.use('/api/v1', routesV1);
