@@ -11,6 +11,9 @@
     "create-indexes": "node scripts/create-indexes.js",
     "check-indexes": "node scripts/create-indexes.js",
     "seed-services": "node scripts/seedCustomServices.js",
+    "seed-all": "node scripts/seedITWebsiteData.js",
+    "seed-all-direct": "node scripts/seedITWebsiteDataDirect.js",
+    "cleanup-non-it": "node scripts/cleanupNonITData.js",
     "create-admin": "node scripts/createAdminUser.js",
     "update-service-categories": "node scripts/updateServiceCategories.js",
     "postinstall": "npm run create-indexes || true"
