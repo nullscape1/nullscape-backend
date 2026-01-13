@@ -1,0 +1,8 @@
+# Ensure JavaScript files are stored without BOM
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# Prevent BOM in all text files
+* text=auto eol=lf
+
