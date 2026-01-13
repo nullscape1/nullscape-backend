@@ -16,3 +16,5 @@ router.delete('/:id', ...adminStrict, PartnerController.remove);
 
 export default router;
 
+
+

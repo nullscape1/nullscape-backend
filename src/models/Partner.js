@@ -19,3 +19,5 @@ partnerSchema.index({ status: 1, createdAt: -1 });
 
 export const Partner = mongoose.model('Partner', partnerSchema);
 
+
+

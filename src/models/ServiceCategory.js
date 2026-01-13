@@ -23,3 +23,5 @@ serviceCategorySchema.index({ status: 1, order: 1 });
 
 export const ServiceCategory = mongoose.model('ServiceCategory', serviceCategorySchema);
 
+
+
