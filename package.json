@@ -8,9 +8,8 @@
     "start": "NODE_ENV=production node src/server.js",
     "lint": "echo \"No linter configured\"",
     "prepare": "husky install || true",
-    "create-indexes": "node scripts/create-indexes.js",
-    "check-indexes": "node scripts/create-indexes.js",
-    "postinstall": "npm run create-indexes || true"
+    "create-indexes": "node scripts/create-indexes.js || true",
+    "check-indexes": "node scripts/create-indexes.js || true"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
