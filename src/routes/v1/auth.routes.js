@@ -16,6 +16,9 @@ router.post('/reset-password', formRateLimiter, validateBody(resetSchema), AuthC
 router.get('/me', auth(), AuthController.me);
 router.post('/logout', AuthController.logout);
 
+// Bootstrap endpoint - creates first admin (only if none exists)
+router.post('/bootstrap', formRateLimiter, validateBody(registerSchema), AuthController.bootstrap);
+
 export default router;
 
 

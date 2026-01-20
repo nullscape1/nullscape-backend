@@ -69,11 +69,24 @@ export async function connectMongo() {
       retryReads: true,
     };
 
+    // Extract full cluster hostname for better diagnostics
+    const fullClusterMatch = uri.match(/mongodb\+srv:\/\/.*@([^\/]+)/);
+    const fullClusterHost = fullClusterMatch ? fullClusterMatch[1] : clusterName;
+    
     logger.info('Attempting MongoDB connection...', {
       uriMasked: uri.replace(/\/\/.*@/, '//***@'),
       isAtlas: uri.includes('mongodb+srv://'),
       clusterName: clusterName,
+      fullClusterHost: fullClusterHost,
     });
+    
+    // Warn if cluster hostname doesn't match expected format
+    if (!fullClusterHost.includes('mongodb.net')) {
+      logger.warn('Unexpected cluster hostname format detected', {
+        detectedHost: fullClusterHost,
+        expectedFormat: 'cluster-name.XXXXX.mongodb.net',
+      });
+    }
     
     await mongoose.connect(uri, connectionOptions);
     

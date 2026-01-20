@@ -3,6 +3,7 @@ import { catchAsync } from '../utils/catchAsync.js';
 import * as AuthService from '../services/authService.js';
 import { ApiError } from '../middlewares/error.js';
 import { User } from '../models/User.js';
+import { Role } from '../models/Role.js';
 
 export const register = catchAsync(async (req, res) => {
   const user = await AuthService.registerAdmin(req.body);
@@ -41,6 +42,41 @@ export const me = catchAsync(async (req, res) => {
 export const logout = catchAsync(async (req, res) => {
   await AuthService.logout({ refreshToken: req.body.refreshToken });
   res.json({ success: true });
+});
+
+/**
+ * Bootstrap endpoint - creates first admin user
+ * Only works if no SuperAdmin or Admin users exist
+ * Use this for initial setup on production
+ */
+export const bootstrap = catchAsync(async (req, res) => {
+  // Check if any admin users exist
+  const superAdminRole = await Role.findOne({ name: 'SuperAdmin' });
+  const adminRole = await Role.findOne({ name: 'Admin' });
+  
+  if (superAdminRole || adminRole) {
+    const adminCount = await User.countDocuments({
+      roles: { $in: [superAdminRole?._id, adminRole?._id].filter(Boolean) },
+    });
+    
+    if (adminCount > 0) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'Admin users already exist. Use /api/v1/auth/register or login with existing credentials.');
+    }
+  }
+  
+  // Create first admin
+  const user = await AuthService.registerAdmin({
+    name: req.body.name || 'Super Admin',
+    email: req.body.email,
+    password: req.body.password,
+    role: 'SuperAdmin',
+  });
+  
+  res.status(httpStatus.CREATED).json({
+    success: true,
+    message: 'First admin user created successfully',
+    user: { id: user.id, name: user.name, email: user.email },
+  });
 });
 
 
