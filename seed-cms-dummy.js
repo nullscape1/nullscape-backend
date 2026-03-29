@@ -137,6 +137,51 @@ const globalSettingsSeed = [
     label: 'Social links',
     value: { twitter: 'https://twitter.com', linkedin: 'https://linkedin.com' },
   },
+  {
+    key: 'site',
+    label: 'Homepage stats, contact, offices',
+    value: {
+      stats: {
+        clients: '250+',
+        projects: '1850+',
+        cmmi: 'Level 5',
+        rating: '4.9/5',
+        labels: {
+          clients: 'Happy Clients',
+          projects: 'Projects Delivered',
+          cmmi: 'CMMI Maturity',
+          rating: 'Average Review',
+        },
+        aboutProjects: '500+',
+        aboutProjectsLabel: 'Projects Delivered',
+        aboutClients: '200+',
+        aboutClientsLabel: 'Happy Clients',
+        aboutTeam: '50+',
+        aboutTeamLabel: 'Team Members',
+        aboutAwards: '15+',
+        aboutAwardsLabel: 'Awards Won',
+      },
+      contact: {
+        email: 'hello@nullscape.com',
+        phone: '+1 (555) 123-4567',
+        address: '123 Tech Avenue, San Francisco, CA 94102',
+      },
+      offices: [
+        {
+          title: 'India — HQ',
+          lines: ['A-25 to 29, Demo Address', 'Gujarat, India — 396002'],
+          phone: '+91 00000 00000',
+          email: 'sales@nullscape.com',
+        },
+        {
+          title: 'USA',
+          lines: ['8 The Green, Suite A', 'Dover, DE 19901'],
+          phone: '+1 000 000 0000',
+          email: 'sales@nullscape.com',
+        },
+      ],
+    },
+  },
 ];
 
 async function seed() {

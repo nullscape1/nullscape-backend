@@ -19,6 +19,8 @@ const items = [
   { name: 'AWS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg', category: 'Cloud', description: `Cloud platform. ${MARKER}`, order: 1, status: 'active' },
   { name: 'Docker', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg', category: 'DevOps', description: `Containers. ${MARKER}`, order: 1, status: 'active' },
   { name: 'Flutter', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg', category: 'Mobile', description: `Cross-platform mobile. ${MARKER}`, order: 1, status: 'active' },
+  { name: 'Shopify', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/shopify/shopify-original.svg', category: 'Ecommerce', description: `Commerce platform. ${MARKER}`, order: 1, status: 'active' },
+  { name: 'TensorFlow', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg', category: 'DataAnalytics', description: `ML / analytics. ${MARKER}`, order: 1, status: 'active' },
 ];
 
 async function run() {

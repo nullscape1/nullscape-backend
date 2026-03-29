@@ -10,6 +10,7 @@ import {
   getBlogsPublic,
   getCaseStudiesPublic,
   getGlobalSettings,
+  getIndustriesPublic,
   getPageBySlug,
   listSectionsByPage,
 } from '../../controllers/cmsV2.controller.js';
@@ -24,6 +25,7 @@ router.get('/global-settings', optionalAuth(), getGlobalSettings);
 router.get('/services', optionalAuth(), ServiceController.list);
 router.get('/blogs', optionalAuth(), getBlogsPublic);
 router.get('/case-studies', optionalAuth(), getCaseStudiesPublic);
+router.get('/industries', optionalAuth(), getIndustriesPublic);
 
 // Admin CMS endpoints. Register more specific paths before `/cms-v2/pages/:id`.
 router.get('/cms-v2/pages', ...admin, CmsPageV2Controller.list);

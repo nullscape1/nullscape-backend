@@ -59,6 +59,16 @@ export const getCaseStudiesPublic = catchAsync(async (req, res) => {
   res.json({ items, total: items.length });
 });
 
+/** Public list for website (published industries only). */
+export const getIndustriesPublic = catchAsync(async (req, res) => {
+  const limit = Math.min(Number(req.query.limit || 24), 50);
+  const items = await Industry.find({ status: 'published' })
+    .sort({ updatedAt: -1 })
+    .limit(limit)
+    .lean();
+  res.json({ items, total: items.length });
+});
+
 export const listSectionsByPage = catchAsync(async (req, res) => {
   const pageId = String(req.params.id || '').trim();
   if (!isValidObjectId(pageId)) {
