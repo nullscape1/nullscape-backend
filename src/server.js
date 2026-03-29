@@ -9,6 +9,7 @@ import xss from 'xss-clean';
 import morgan from 'morgan';
 import httpStatus from 'http-status';
 import { connectMongo } from './config/mongo.js';
+import { getCorsOptions } from './config/cors.js';
 import { rateLimiter } from './middlewares/rateLimiter.js';
 import { errorConverter, errorHandler, notFoundHandler } from './middlewares/error.js';
 import routesV1 from './routes/v1/index.js';
@@ -22,20 +23,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
-// CORS configuration - strict in production
-const corsOptions = {
-  origin: process.env.CORS_ORIGIN 
-    ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
-    : process.env.NODE_ENV === 'production'
-      ? [] // No default origins in production
-      : ['http://localhost:8000', 'http://localhost:3000', 'http://127.0.0.1:8000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['X-Total-Count'],
-  maxAge: 86400, // 24 hours
-};
-app.use(cors(corsOptions));
+app.use(cors(getCorsOptions()));
 
 // Health check and root routes (before rate limiting)
 app.get('/', (req, res) => {
@@ -113,6 +101,10 @@ const port = process.env.PORT || 4000;
 
 const start = async () => {
   try {
+    if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
+      logger.error('JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be set in environment');
+      process.exit(1);
+    }
     await connectMongo();
     app.listen(port, () => {
       logger.info(`API server started`, {

@@ -1,20 +1,26 @@
 import { Router } from 'express';
-import { TestimonialController } from '../../controllers/genericControllers.js';
+import { TestimonialController } from '../../controllers/testimonialController.js';
 import { auth, requireRoles, optionalAuth } from '../../middlewares/auth.js';
-import { cacheMiddleware } from '../../utils/cache.js';
+import { cacheMiddleware, cacheClear } from '../../utils/cache.js';
 
 const router = Router();
+
+const FIVE_MIN = 5 * 60 * 1000;
+const TEN_MIN = 10 * 60 * 1000;
+
+const clearTestimonialsCache = (req, res, next) => {
+  cacheClear('GET:/api/v1/testimonials');
+  next();
+};
+
 const admin = [auth(), requireRoles('Admin', 'SuperAdmin', 'Editor')];
 const adminStrict = [auth(), requireRoles('Admin', 'SuperAdmin')];
 
-// Public routes with caching - use optionalAuth to set req.user for authenticated requests
-router.get('/', optionalAuth(), cacheMiddleware(5 * 60 * 1000), TestimonialController.list);
-router.get('/:id', optionalAuth(), cacheMiddleware(10 * 60 * 1000), TestimonialController.get);
-router.post('/', ...admin, TestimonialController.create);
-router.put('/:id', ...admin, TestimonialController.update);
-router.delete('/:id', ...adminStrict, TestimonialController.remove);
+router.get('/', optionalAuth(), cacheMiddleware(FIVE_MIN), TestimonialController.list);
+router.get('/:id', optionalAuth(), cacheMiddleware(TEN_MIN), TestimonialController.get);
+
+router.post('/', ...admin, clearTestimonialsCache, TestimonialController.create);
+router.put('/:id', ...admin, clearTestimonialsCache, TestimonialController.update);
+router.delete('/:id', ...adminStrict, clearTestimonialsCache, TestimonialController.remove);
 
 export default router;
-
-
-

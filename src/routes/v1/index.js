@@ -19,6 +19,7 @@ import activityRoutes from './activity.routes.js';
 import jobsRoutes from './jobs.routes.js';
 import partnersRoutes from './partners.routes.js';
 import serviceCategoryRoutes from './serviceCategories.routes.js';
+import cmsV2Routes from './cmsV2.routes.js';
 
 const router = Router();
 
@@ -47,5 +48,6 @@ router.use('/activity', activityRoutes);
 router.use('/jobs', jobsRoutes);
 router.use('/partners', partnersRoutes);
 router.use('/service-categories', serviceCategoryRoutes);
+router.use('/', cmsV2Routes);
 
 export default router;

@@ -5,6 +5,7 @@ import { validateBody } from '../../middlewares/validate.js';
 import { serviceCreateSchema, serviceUpdateSchema } from '../../validators/service.js';
 import { logActivity } from '../../utils/activity.js';
 import { cacheMiddleware, cacheClear } from '../../utils/cache.js';
+import { catchAsync } from '../../utils/catchAsync.js';
 
 const router = Router();
 
@@ -20,30 +21,51 @@ const clearServiceCache = (req, res, next) => {
   next();
 };
 
-router.post('/', auth(), requireRoles('Admin', 'SuperAdmin', 'Editor'), validateBody(serviceCreateSchema), clearServiceCache, async (req, res, next) => {
-  try {
-    await ServiceController.create(req, res, async () => {});
+router.post(
+  '/',
+  auth(),
+  requireRoles('Admin', 'SuperAdmin', 'Editor'),
+  validateBody(serviceCreateSchema),
+  clearServiceCache,
+  catchAsync(async (req, res, next) => {
+    await ServiceController.create(req, res, next);
     await logActivity({ action: 'create', entity: 'Service', user: req.user, ip: req.ip, meta: { body: req.body } });
-  } catch (e) {
-    next(e);
-  }
-});
-router.put('/:id', auth(), requireRoles('Admin', 'SuperAdmin', 'Editor'), validateBody(serviceUpdateSchema), clearServiceCache, async (req, res, next) => {
-  try {
-    await ServiceController.update(req, res, async () => {});
-    await logActivity({ action: 'update', entity: 'Service', entityId: req.params.id, user: req.user, ip: req.ip, meta: { body: req.body } });
-  } catch (e) {
-    next(e);
-  }
-});
-router.delete('/:id', auth(), requireRoles('Admin', 'SuperAdmin'), clearServiceCache, async (req, res, next) => {
-  try {
-    await ServiceController.remove(req, res, async () => {});
-    await logActivity({ action: 'delete', entity: 'Service', entityId: req.params.id, user: req.user, ip: req.ip });
-  } catch (e) {
-    next(e);
-  }
-});
+  })
+);
+router.put(
+  '/:id',
+  auth(),
+  requireRoles('Admin', 'SuperAdmin', 'Editor'),
+  validateBody(serviceUpdateSchema),
+  clearServiceCache,
+  catchAsync(async (req, res, next) => {
+    await ServiceController.update(req, res, next);
+    await logActivity({
+      action: 'update',
+      entity: 'Service',
+      entityId: req.params.id,
+      user: req.user,
+      ip: req.ip,
+      meta: { body: req.body },
+    });
+  })
+);
+router.delete(
+  '/:id',
+  auth(),
+  requireRoles('Admin', 'SuperAdmin'),
+  clearServiceCache,
+  catchAsync(async (req, res, next) => {
+    await ServiceController.remove(req, res, next);
+    await logActivity({
+      action: 'delete',
+      entity: 'Service',
+      entityId: req.params.id,
+      user: req.user,
+      ip: req.ip,
+    });
+  })
+);
 
 export default router;
 

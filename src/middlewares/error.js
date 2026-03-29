@@ -19,12 +19,35 @@ export const notFoundHandler = (req, res, next) => {
 };
 
 export const errorConverter = (err, req, res, next) => {
-  let error = err;
-  if (!(error instanceof ApiError)) {
-    const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
-    const message = error.message || httpStatus[statusCode];
-    error = new ApiError(statusCode, message, false, err.stack);
+  if (err instanceof ApiError) {
+    next(err);
+    return;
   }
+
+  let error = err;
+
+  if (error.name === 'ValidationError' && error.errors) {
+    const messages = Object.values(error.errors).map((e) => e.message).join(', ');
+    error = new ApiError(httpStatus.BAD_REQUEST, messages || 'Validation error', true, err.stack);
+    return next(error);
+  }
+  if (error.name === 'CastError') {
+    error = new ApiError(httpStatus.BAD_REQUEST, 'Invalid id or field value', true, err.stack);
+    return next(error);
+  }
+  if (error.code === 11000) {
+    const field = Object.keys(error.keyPattern || {})[0] || 'field';
+    error = new ApiError(httpStatus.CONFLICT, `${field} already exists`, true, err.stack);
+    return next(error);
+  }
+  if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+    error = new ApiError(httpStatus.UNAUTHORIZED, 'Invalid or expired token', true, err.stack);
+    return next(error);
+  }
+
+  const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
+  const message = error.message || httpStatus[statusCode];
+  error = new ApiError(statusCode, message, statusCode < 500, err.stack);
   next(error);
 };
 

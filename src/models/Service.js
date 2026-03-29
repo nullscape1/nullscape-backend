@@ -31,29 +31,28 @@ serviceSchema.pre('validate', function setSlug(next) {
   next();
 });
 
-// Pre-save hook to set categoryId if category name is provided
-serviceSchema.pre('save', async function setCategoryId(next) {
-  if (this.isModified('category') && this.category && !this.categoryId) {
-    try {
-      const categoryDoc = await ServiceCategory.findOne({ name: this.category });
-      if (categoryDoc) {
-        this.categoryId = categoryDoc._id;
+// Pre-save: keep category and categoryId in sync (runs on create + document.save())
+serviceSchema.pre('save', async function syncCategoryFields(next) {
+  try {
+    if (this.isModified('category')) {
+      const name = (this.category || '').trim();
+      if (!name) {
+        this.category = '';
+        this.categoryId = null;
+      } else {
+        this.category = name;
+        const categoryDoc = await ServiceCategory.findOne({ name });
+        this.categoryId = categoryDoc ? categoryDoc._id : null;
       }
-    } catch (error) {
-      // If category not found, continue without setting categoryId
-      console.warn(`Category "${this.category}" not found for service "${this.name}"`);
     }
-  }
-  // Also set category name if categoryId is provided but category name is not
-  if (this.isModified('categoryId') && this.categoryId && !this.category) {
-    try {
+    if (this.isModified('categoryId') && this.categoryId && !(this.category || '').trim()) {
       const categoryDoc = await ServiceCategory.findById(this.categoryId);
       if (categoryDoc) {
         this.category = categoryDoc.name;
       }
-    } catch (error) {
-      console.warn(`Category ID "${this.categoryId}" not found for service "${this.name}"`);
     }
+  } catch (error) {
+    console.warn('Service category sync:', error?.message || error);
   }
   next();
 });

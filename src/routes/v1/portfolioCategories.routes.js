@@ -1,19 +1,24 @@
 import { Router } from 'express';
-import { PortfolioCategoryController } from '../../controllers/genericControllers.js';
+import { PortfolioCategoryController } from '../../controllers/portfolioCategoryController.js';
 import { auth, requireRoles, optionalAuth } from '../../middlewares/auth.js';
-import { cacheMiddleware } from '../../utils/cache.js';
+import { cacheMiddleware, cacheClear } from '../../utils/cache.js';
 
 const router = Router();
+
+const clearPortfolioCategoryCache = (req, res, next) => {
+  cacheClear('GET:/api/v1/portfolio-categories');
+  cacheClear('GET:/api/v1/portfolio');
+  next();
+};
+
+router.get('/', optionalAuth(), cacheMiddleware(5 * 60 * 1000), PortfolioCategoryController.list);
+router.get('/:id', optionalAuth(), cacheMiddleware(10 * 60 * 1000), PortfolioCategoryController.get);
+
 const admin = [auth(), requireRoles('Admin', 'SuperAdmin', 'Editor')];
 const adminStrict = [auth(), requireRoles('Admin', 'SuperAdmin')];
 
-// Public routes with caching - use optionalAuth to set req.user for authenticated requests
-router.get('/', optionalAuth(), cacheMiddleware(10 * 60 * 1000), PortfolioCategoryController.list);
-router.get('/:id', optionalAuth(), cacheMiddleware(10 * 60 * 1000), PortfolioCategoryController.get);
-router.post('/', ...admin, PortfolioCategoryController.create);
-router.put('/:id', ...admin, PortfolioCategoryController.update);
-router.delete('/:id', ...adminStrict, PortfolioCategoryController.remove);
+router.post('/', ...admin, clearPortfolioCategoryCache, PortfolioCategoryController.create);
+router.put('/:id', ...admin, clearPortfolioCategoryCache, PortfolioCategoryController.update);
+router.delete('/:id', ...adminStrict, clearPortfolioCategoryCache, PortfolioCategoryController.remove);
 
 export default router;
-
-

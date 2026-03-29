@@ -24,7 +24,8 @@ export const rateLimiter = rateLimit({
     return false;
   },
   message: {
-    error: 'Too many requests from this IP, please try again later.',
+    code: 429,
+    message: 'Too many requests from this IP, please try again later.',
   },
   handler: (req, res) => {
     logger.warn('Rate limit exceeded', {
@@ -32,17 +33,32 @@ export const rateLimiter = rateLimit({
       path: req.path,
       method: req.method,
     });
+    const msg = 'Too many requests from this IP, please try again later.';
     res.status(429).json({
-      error: 'Too many requests from this IP, please try again later.',
+      code: 429,
+      message: msg,
+      error: msg,
     });
   },
 });
+
+function isLocalRequest(req) {
+  if (process.env.NODE_ENV === 'production') return false;
+  const ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || '';
+  return (
+    ip === '127.0.0.1' ||
+    ip === '::1' ||
+    ip === '::ffff:127.0.0.1' ||
+    String(ip).includes('127.0.0.1')
+  );
+}
 
 // Stricter rate limiter for auth routes
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10, // 10 login attempts per 15 minutes
   skipSuccessfulRequests: true,
+  skip: (req) => isLocalRequest(req),
   message: {
     error: 'Too many authentication attempts, please try again later.',
   },
@@ -52,6 +68,8 @@ export const authRateLimiter = rateLimit({
       path: req.path,
     });
     res.status(429).json({
+      code: 429,
+      message: 'Too many authentication attempts, please try again later.',
       error: 'Too many authentication attempts, please try again later.',
     });
   },
@@ -62,7 +80,13 @@ export const formRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 20, // 20 submissions per hour
   message: {
-    error: 'Too many form submissions, please try again later.',
+    code: 429,
+    message: 'Too many form submissions, please try again later.',
+  },
+  handler: (req, res) => {
+    const msg = 'Too many form submissions, please try again later.';
+    logger.warn('Form rate limit exceeded', { ip: req.ip, path: req.path });
+    res.status(429).json({ code: 429, message: msg, error: msg });
   },
 });
 

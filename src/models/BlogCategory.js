@@ -13,7 +13,7 @@ const blogCategorySchema = new mongoose.Schema(
 );
 
 blogCategorySchema.pre('save', function(next) {
-  if (this.isModified('name') && !this.slug) {
+  if (this.isModified('name')) {
     this.slug = this.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   }
   next();

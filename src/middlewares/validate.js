@@ -6,7 +6,15 @@ export const validateBody = (schema) => async (req, _res, next) => {
     req.body = await schema.parseAsync(req.body);
     next();
   } catch (err) {
-    next(new ApiError(httpStatus.BAD_REQUEST, err.errors?.[0]?.message || 'Validation error'));
+    let msg = 'Validation error';
+    if (err?.issues?.length) {
+      msg = err.issues
+        .map((i) => (i.path?.length ? `${i.path.join('.')}: ${i.message}` : i.message))
+        .join('; ');
+    } else if (err?.message) {
+      msg = err.message;
+    }
+    next(new ApiError(httpStatus.BAD_REQUEST, msg));
   }
 };
 

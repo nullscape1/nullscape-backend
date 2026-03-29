@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
+import { PortfolioCategory } from './PortfolioCategory.js';
 
 const portfolioSchema = new mongoose.Schema(
   {
@@ -30,6 +31,29 @@ portfolioSchema.index({ featured: 1, status: 1 });
 portfolioSchema.pre('validate', function setSlug(next) {
   if (this.isModified('name')) {
     this.slug = slugify(this.name, { lower: true, strict: true });
+  }
+  next();
+});
+
+portfolioSchema.pre('save', async function syncPortfolioCategoryFields(next) {
+  try {
+    if (this.isModified('category')) {
+      const name = (this.category || '').trim();
+      if (!name) {
+        this.category = '';
+        this.categoryId = null;
+      } else {
+        this.category = name;
+        const cat = await PortfolioCategory.findOne({ name });
+        this.categoryId = cat ? cat._id : null;
+      }
+    }
+    if (this.isModified('categoryId') && this.categoryId && !(this.category || '').trim()) {
+      const cat = await PortfolioCategory.findById(this.categoryId);
+      if (cat) this.category = cat.name;
+    }
+  } catch (e) {
+    console.warn('Portfolio category sync:', e?.message || e);
   }
   next();
 });

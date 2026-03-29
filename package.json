@@ -6,15 +6,26 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/server.js",
     "start": "NODE_ENV=production node src/server.js",
+    "test": "node --test src/utils/objectId.test.js src/utils/sortQuery.test.js src/utils/listQuery.test.js",
     "lint": "echo \"No linter configured\"",
     "prepare": "husky install || true",
     "create-indexes": "node scripts/create-indexes.js || true",
     "check-indexes": "node scripts/create-indexes.js || true",
-    "create-admin": "node create-superadmin.js"
+    "create-admin": "node create-superadmin.js",
+    "reset-admin-password": "node reset-admin-password.js",
+    "seed:cms": "node seed-cms-dummy.js",
+    "seed:blog": "node seed-blog-dummy.js",
+    "seed:services": "node seed-services-dummy.js",
+    "seed:portfolio": "node seed-portfolio-dummy.js",
+    "seed:testimonials": "node seed-testimonials-dummy.js",
+    "seed:partners": "node seed-partners-dummy.js",
+    "seed:team": "node seed-team-dummy.js",
+    "seed:tech-stack": "node seed-tech-stack-dummy.js",
+    "seed:pricing": "node seed-pricing-dummy.js",
+    "seed:all": "node seed-all-demo.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "celebrate": "^15.0.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

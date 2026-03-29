@@ -4,6 +4,8 @@ import { auth, requireRoles } from '../../middlewares/auth.js';
 import path from 'path';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs';
+import { ApiError } from '../../middlewares/error.js';
+import httpStatus from 'http-status';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'src/uploads'),
@@ -14,6 +16,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+
+// Allow only safe filenames (no path traversal)
+const SAFE_FILENAME_REGEX = /^[a-zA-Z0-9._-]+$/;
 
 const router = Router();
 router.post('/', auth(), requireRoles('Admin', 'SuperAdmin', 'Editor'), upload.array('files', 10), (req, res) => {
@@ -36,9 +41,17 @@ router.get('/list', auth(), requireRoles('Admin', 'SuperAdmin', 'Editor'), (req,
   });
 });
 router.delete('/:filename', auth(), requireRoles('Admin', 'SuperAdmin'), (req, res, next) => {
-  const file = path.join('src/uploads', req.params.filename);
-  fs.unlink(file, (err) => {
-    if (err) return next(err);
+  const raw = req.params.filename;
+  const basename = path.basename(raw);
+  if (!basename || !SAFE_FILENAME_REGEX.test(basename)) {
+    return next(new ApiError(httpStatus.BAD_REQUEST, 'Invalid filename'));
+  }
+  const filePath = path.join('src/uploads', basename);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      if (err.code === 'ENOENT') return next(new ApiError(httpStatus.NOT_FOUND, 'File not found'));
+      return next(err);
+    }
     return res.json({ success: true });
   });
 });

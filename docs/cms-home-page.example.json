@@ -1,0 +1,52 @@
+{
+  "title": "Growth Engineering for Revenue",
+  "slug": "home",
+  "seoTitle": "Growth Engineering Company | Leads and Revenue Systems",
+  "seoDescription": "We build growth systems for startups, SMEs, coaches, and local businesses to generate predictable leads and revenue.",
+  "status": "published",
+  "sections": [
+    {
+      "type": "hero",
+      "name": "Home Hero",
+      "order": 1,
+      "status": "published",
+      "content": {
+        "eyebrow": "Growth Engineering Company",
+        "title": "We engineer lead and revenue systems that scale",
+        "subtitle": "From SEO and paid growth to websites, apps, and automation pipelines.",
+        "primaryCtaText": "Get Free Growth Audit",
+        "primaryCtaLink": "/contact",
+        "secondaryCtaText": "Book Strategy Call",
+        "secondaryCtaLink": "/contact"
+      }
+    },
+    {
+      "type": "services",
+      "name": "Core Services",
+      "order": 2,
+      "status": "published",
+      "content": {
+        "title": "Growth Services",
+        "items": [
+          { "title": "Digital Marketing", "description": "Channel strategy focused on qualified pipeline." },
+          { "title": "SEO and AI SEO", "description": "Search visibility across classic and AI-first discovery." },
+          { "title": "Website Development", "description": "High-converting websites built for speed and trust." },
+          { "title": "Mobile App Development", "description": "Product-ready mobile experiences tied to growth goals." },
+          { "title": "Automation Systems", "description": "Lead capture, nurturing, and follow-up automation." }
+        ]
+      }
+    },
+    {
+      "type": "cta",
+      "name": "Mid Page CTA",
+      "order": 3,
+      "status": "published",
+      "content": {
+        "title": "Want predictable growth in the next 90 days?",
+        "description": "Get a practical audit and execution plan.",
+        "text": "Book Strategy Call",
+        "link": "/contact"
+      }
+    }
+  ]
+}
