@@ -60,6 +60,8 @@ const SCRIPTS = [
   'seed-industries-case-studies-dummy.js',
   'seed-jobs-dummy.js',
   'seed-seo-dummy.js',
+  'seed-inquiries-dummy.js',
+  'seed-activity-dummy.js',
 ];
 
 console.log('\n🚀 Production bootstrap: seeding demo content + admin\n');
