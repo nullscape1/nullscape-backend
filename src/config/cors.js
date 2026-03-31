@@ -27,20 +27,37 @@ export function isDevAllowedOrigin(origin) {
 }
 
 export function getCorsOptions() {
+  const envList = (val) =>
+    String(val || '')
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean);
+
+  const extraOrigins = [
+    process.env.SITE_URL,
+    process.env.WEBSITE_URL,
+    process.env.ADMIN_URL,
+  ]
+    .map((s) => (s ? String(s).trim().replace(/\/$/, '') : ''))
+    .filter(Boolean);
+
+  const fromCorsOrigin = envList(process.env.CORS_ORIGIN).map((s) => s.replace(/\/$/, ''));
+  const merged = Array.from(new Set([...fromCorsOrigin, ...extraOrigins]));
+
   return {
-    origin: process.env.CORS_ORIGIN
-      ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    origin: merged.length
+      ? merged
       : process.env.NODE_ENV === 'production'
-        ? (_origin, callback) => {
-            callback(null, false);
-          }
-        : (origin, callback) => {
-            if (isDevAllowedOrigin(origin)) {
-              callback(null, true);
-            } else {
+          ? (_origin, callback) => {
               callback(null, false);
             }
-          },
+          : (origin, callback) => {
+              if (isDevAllowedOrigin(origin)) {
+                callback(null, true);
+              } else {
+                callback(null, false);
+              }
+            },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
