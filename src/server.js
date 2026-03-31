@@ -25,6 +25,12 @@ app.use(helmet({
 
 app.use(cors(getCorsOptions()));
 
+// Prevent stale API responses from being cached by browsers/CDNs/proxies
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
 // Health check and root routes (before rate limiting)
 app.get('/', (req, res) => {
   res.json({
