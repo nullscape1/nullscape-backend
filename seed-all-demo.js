@@ -20,6 +20,9 @@ const SCRIPTS = [
   'seed-team-dummy.js',
   'seed-tech-stack-dummy.js',
   'seed-pricing-dummy.js',
+  'seed-industries-case-studies-dummy.js',
+  'seed-jobs-dummy.js',
+  'seed-seo-dummy.js',
 ];
 
 console.log('\n🌱 Running full demo seed (' + SCRIPTS.length + ' steps)...\n');
